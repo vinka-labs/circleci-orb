@@ -1,0 +1,22 @@
+description: >
+  Builds and pushes a docker image version by tag.
+
+executor: gcp-gcr/default
+
+steps:
+  - checkout
+  - gcp-gcr/gcr-auth
+  - set-image-version-from-tag
+  - gcp-gcr/build-image:
+      image: $CIRCLE_PROJECT_REPONAME
+      tag: $VINKA_CI_IMAGE_VERSION
+      registry-url: eu.gcr.io
+      path: ./docker # Directory containing Dockerfile
+  - gcp-gcr/push-image:
+      image: $CIRCLE_PROJECT_REPONAME
+      tag: $VINKA_CI_IMAGE_VERSION
+      registry-url: eu.gcr.io
+      digest-path: /tmp/digest.txt
+  - run:
+      command: |
+        echo "Digest is: $(</tmp/digest.txt)"

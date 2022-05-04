@@ -1,0 +1,10 @@
+description: >
+  Set version extracted from git tag to env variable. For tagging docker images.
+  Only works when pipeline initiator is tag
+steps:
+  - run:
+      name: Create ENV variable for image tag
+      command: |
+        [[ ! -z $CIRCLE_TAG ]] && \
+        echo "export VINKA_CI_IMAGE_VERSION=$(echo $CIRCLE_TAG | sed 's/v//')" >> $BASH_ENV
+
